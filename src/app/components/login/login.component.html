@@ -1,0 +1,30 @@
+<div class="container">
+    <mat-card>
+        <mat-card-title>Login</mat-card-title>
+        <mat-card-content>
+            <form>
+                <div class="d-flex flex-column">
+                    <!-- EMAIL -->
+                    <mat-form-field>
+                        <input type="text" matInput placeholder="Username" formControlName="username" required />
+                        <mat-error>
+                            Please provide a valid email address
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- Password -->
+                    <mat-form-field>
+                        <input type="text" matInput placeholder="Password" formControlName="password" required />
+                        <mat-error>
+                            Please provide a valid email address
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- Submit -->
+                <section class="d-flex flex-column">
+                    <button mat-raised-button class="my-2" color="primary">Login</button>
+                    <a href="">Forgot your password?</a>
+                </section>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
