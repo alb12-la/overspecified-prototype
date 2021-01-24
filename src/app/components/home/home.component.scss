@@ -1,0 +1,9 @@
+.new-interview-btn {
+    position: fixed;
+    bottom: 2em;
+    right: 2em;
+
+    &:focus{
+        outline: none;
+    }
+}
