@@ -1,1 +1,27 @@
-<p>general-form works!</p>
+<!-- Multiple Choice -->
+<div class="col-md-5 col-12 p-5 m-auto">
+    <div class="material-pink small">
+        Question {{ this.index + 1}} of {{this.questions.length }}
+    </div>
+
+    <div *ngIf="this.currentQuestion" class="question-container">
+        <h1>{{ currentQuestion.question }}</h1>
+        <!-- Choices-->
+        <div class="d-flex flex-column m-5"
+            *ngIf="this.currentQuestion.choices && this.currentQuestion.choices.length > 0 ">
+            <mat-radio-button class="tp-radio-button my-1" *ngFor="let option of this.currentQuestion.choices"
+                [value]="option">
+                {{option | titlecase }}
+            </mat-radio-button>
+        </div>
+    </div>
+
+    <div *ngIf="currentQuestion.hint" class="hint small"> {{ currentQuestion.hint }}</div>
+
+    <div class="mt-2">
+        <section class="d-flex flex-row">
+            <button  mat-raised-button class="col">Go Back</button>
+            <button  mat-raised-button class="mx-2 col" color="primary" (click)="onContinue()">Continue</button>
+        </section>
+    </div>
+</div>

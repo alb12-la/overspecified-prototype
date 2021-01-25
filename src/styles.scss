@@ -1,9 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
 
 // styles.scss
 // @import "variables";
+$mat-primary-color : #ff4081;
 @import "~bootstrap/scss/bootstrap.scss";
+
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+
+// Typography 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.mat-radio-button {
+    font-family: 'Noto Sans JP', sans-serif;
+
+}
+// 
+
+.material-pink {
+    color: $mat-primary-color
+}

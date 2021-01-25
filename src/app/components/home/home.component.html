@@ -1,4 +1,4 @@
-<!-- NAV -->
+<!-- Nav -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="home">OW Inc.</a>
@@ -24,7 +24,12 @@
 </nav>
 
 
-<button class="new-interview-btn" mat-fab color="accent" aria-label="New interview"  [routerLink]="['new']">
+<div>
+    <router-outlet></router-outlet>
+</div>
+
+
+<!-- New Interview Btn-->
+<button class="new-interview-btn" mat-fab color="accent" aria-label="New Interview" [routerLink]="['new']">
     <mat-icon>add</mat-icon>
 </button>
-<router-outlet></router-outlet>
