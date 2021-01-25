@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InterviewService, Question } from 'src/app/services/interview.service';
+import { InterviewService, QuestionObj, MultipleChoiceQuestion } from 'src/app/services/interview.service';
 
 @Component({
   selector: 'app-general-form',
@@ -9,11 +9,12 @@ import { InterviewService, Question } from 'src/app/services/interview.service';
 export class GeneralFormComponent implements OnInit {
 
   constructor(private interviewService: InterviewService) { }
-  questions: Question[];
-  currentQuestion: Question;
+  questions: QuestionObj[];
+  currentQuestion: QuestionObj | MultipleChoiceQuestion;
   index = 0;
 
   ngOnInit() {
+    console.log(this.interviewService.getQuestions());
     this.questions = this.interviewService.getQuestions();
     this.currentQuestion = this.questions[this.index];
   }
