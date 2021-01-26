@@ -58,6 +58,7 @@ export class MultipleChoiceQuestion extends QuestionObj {
   }
 }
 
+export type displayQuestion = QuestionObj & MultipleChoiceQuestion;
 
 @Injectable({
   providedIn: 'root'
@@ -117,7 +118,7 @@ export class InterviewService {
    * Converts raw JSON questions into specialized questions
    * @param jsonObj : raw json object
    */
-  deserializeQuestions(jsonObj: any) {
+  deserializeQuestions(jsonObj: any): any {
     // Input questions
     if (jsonObj.questionType === QuestionTypeEnum.INPUT) {
       console.log('INPUT QUESTION FOUND');
@@ -138,7 +139,7 @@ export class InterviewService {
   }
 
   getQuestions() {
-    const typedQuestions: QuestionObj[] = [];
+    const typedQuestions: displayQuestion[] = [];
     this.mockQuestions.forEach(obj => {
       typedQuestions.push(this.deserializeQuestions(obj));
     });

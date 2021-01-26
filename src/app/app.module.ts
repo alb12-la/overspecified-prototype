@@ -20,6 +20,7 @@ import { MatRadioModule } from '@angular/material/radio';
 
 import { HomeComponent } from './components/home/home.component';
 import { GeneralFormComponent } from './components/general-form/general-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -39,7 +40,9 @@ import { GeneralFormComponent } from './components/general-form/general-form.com
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule
+    MatRadioModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [InterviewService],
   bootstrap: [AppComponent]

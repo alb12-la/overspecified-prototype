@@ -1,27 +1,45 @@
 <!-- Multiple Choice -->
-<div class="col-md-5 col-12 p-5 m-auto">
+<div *ngIf="!this.loading" class="col-md-5 col-12 p-5 m-auto">
     <div class="material-pink small">
         Question {{ this.index + 1}} of {{this.questions.length }}
     </div>
 
-    <div *ngIf="this.currentQuestion" class="question-container">
-        <h1>{{ currentQuestion.question }}</h1>
-        <!-- Choices-->
-        <div class="d-flex flex-column m-5"
-            *ngIf="this.currentQuestion.choices && this.currentQuestion.choices.length > 0 ">
-            <mat-radio-button class="tp-radio-button my-1" *ngFor="let option of this.currentQuestion.choices"
-                [value]="option">
-                {{option | titlecase }}
-            </mat-radio-button>
+    <form [formGroup]="interviewForm">
+
+
+        <ng-container [ngSwitch]="this.currentQuestion.getQuestionType()">
+            <ng-container *ngSwitchCase="QuestionTypeEnum.MULTIPLE_CHOICE">
+                MULTIPLE CHOICE {{'question-'+index}}
+                <div class="question-container">
+                    <h1>{{ currentQuestion.getQuestion() }}</h1>
+                    <!-- Choices-->
+                    <div class="d-flex flex-column m-5"
+                        *ngIf="this.currentQuestion.getChoices() && this.currentQuestion.getChoices().length > 0 ">
+                        <mat-radio-group [formControl]="interviewForm.get('question-'+ index)"
+                            class="d-flex flex-column">
+                            <mat-radio-button class="tp-radio-button my-1"
+                                *ngFor="let option of this.currentQuestion.getChoices()" [value]="option">
+                                {{option | titlecase }}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <div *ngIf="currentQuestion.getHint()" class="hint small"> {{ currentQuestion.getHint() }}</div>
+
+        <div class="mt-2">
+            <section class="d-flex flex-row">
+                <button mat-raised-button class="col" (click)="onBack()">Go Back</button>
+                <button mat-raised-button class="mx-2 col" color="primary" (click)="onContinue()">Continue</button>
+            </section>
         </div>
-    </div>
-
-    <div *ngIf="currentQuestion.hint" class="hint small"> {{ currentQuestion.hint }}</div>
-
-    <div class="mt-2">
-        <section class="d-flex flex-row">
-            <button  mat-raised-button class="col">Go Back</button>
-            <button  mat-raised-button class="mx-2 col" color="primary" (click)="onContinue()">Continue</button>
-        </section>
-    </div>
+    </form>
 </div>
+
+<pre>
+{{
+    this.interviewForm.getRawValue() | json
+}}
+</pre>
