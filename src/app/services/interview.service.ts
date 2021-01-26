@@ -87,7 +87,7 @@ export class InterviewService {
     },
     {
       questionType: 'multiplechoice',
-      question: 'What color are the eyes of the most interesting person you know (select all that apply)',
+      question: 'What color are the eyes of the most interesting person you know?',
       isMultipleAnswer: true,
       choices: [
         'brown',
@@ -115,18 +115,16 @@ export class InterviewService {
   constructor() { }
 
   /**
-   * Converts raw JSON questions into specialized questions
+   * Converts raw JSON questions into specialized question classes
    * @param jsonObj : raw json object
    */
   deserializeQuestions(jsonObj: any): any {
     // Input questions
     if (jsonObj.questionType === QuestionTypeEnum.INPUT) {
-      console.log('INPUT QUESTION FOUND');
       return new QuestionObj(jsonObj.questionType, jsonObj.question, jsonObj.hint);
     }
     // Multiple choice questions
     if (jsonObj.questionType === QuestionTypeEnum.MULTIPLE_CHOICE) {
-      console.log('Multiple choice question born');
       return new MultipleChoiceQuestion(
         jsonObj.questionType,
         jsonObj.question,

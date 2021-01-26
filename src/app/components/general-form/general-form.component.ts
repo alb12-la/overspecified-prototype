@@ -1,8 +1,6 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   InterviewService,
-  QuestionObj,
-  MultipleChoiceQuestion,
   QuestionTypeEnum,
   displayQuestion
 } from 'src/app/services/interview.service';
@@ -10,7 +8,7 @@ import {
 import { FormGroup, AbstractControl, FormBuilder, FormControl, Validators, NgForm, FormGroupDirective, FormArray } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 
-// Error when invalid control is dirty or touched 
+// Error when invalid control is dirty or touched
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     return (control && control.invalid) && (control.dirty || control.touched);
@@ -41,7 +39,12 @@ export class GeneralFormComponent implements OnInit {
     // Create a form group
     const group = {};
     this.questions.forEach((question, index) => {
-      group[`question-${index}`] = new FormControl('', Validators.required);
+      if (question.getQuestionType() === QuestionTypeEnum.MULTIPLE_CHOICE
+        && question.getIsMultipleAnswer()) {
+        group[`question-${index}`] = new FormArray([]);
+      } else {
+        group[`question-${index}`] = new FormControl('', Validators.required);
+      }
     });
 
     this.interviewForm = new FormGroup(group);
@@ -51,6 +54,29 @@ export class GeneralFormComponent implements OnInit {
 
   indexToName(index: number) {
     return `question-${index}`;
+  }
+
+  onCheckboxChange(index: number, option: string, e: any) {
+    const checkArray: FormArray = this.interviewForm.get(this.indexToName(index)) as FormArray;
+    if (e.checked) {
+      checkArray.push(new FormControl(option));
+    } else {
+      checkArray.controls.forEach((item: FormControl, ii: number) => {
+        if (item.value === option) {
+          checkArray.removeAt(ii);
+          return;
+        }
+      });
+    }
+  }
+
+  isChecked(index: number, option: string) {
+    const formControl = this.interviewForm.get(this.indexToName(index)) as FormArray;
+    return formControl.controls.some(control => control.value === option);
+  }
+
+  shouldBeDisabled() {
+    return !this.interviewForm.get(this.indexToName(this.index)).valid;
   }
 
   onChangeEventFunc(index: number, name: string, isChecked: any) {

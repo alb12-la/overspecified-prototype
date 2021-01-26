@@ -11,21 +11,25 @@
                 <!-- Radio button -->
                 <div class="question-container">
                     <h1>{{ currentQuestion.getQuestion() }}</h1>
+
                     <div class="d-flex flex-column m-5"
                         *ngIf="this.currentQuestion.getChoices() && this.currentQuestion.getChoices().length > 0 ">
                         <!-- RADIO -->
-                        <mat-radio-group *ngIf="!this.currentQuestion.getIsMultipleAnswer()" [formControl]="interviewForm.get('question-'+ index)"
-                            class="d-flex flex-column">
+                        <mat-radio-group *ngIf="!this.currentQuestion.getIsMultipleAnswer()"
+                            [formControl]="interviewForm.get('question-'+ index)" class="d-flex flex-column">
                             <mat-radio-button class="tp-radio-button my-1"
                                 *ngFor="let option of this.currentQuestion.getChoices()" [value]="option">
                                 {{option | titlecase }}
                             </mat-radio-button>
                         </mat-radio-group>
 
-                        <!-- Checkbox -->
+                        <!-- CHECKBOX -->
                         <div *ngIf="this.currentQuestion.getIsMultipleAnswer()" class="d-flex flex-column">
-                            <div  *ngFor="let option of this.currentQuestion.getChoices()">
-                                <mat-checkbox  (change)="onChangeEventFunc( index, option, $event)">{{ option | titlecase }}</mat-checkbox>
+                            <div class="small my-1 material-pink">( Select all that apply )</div>
+                            <div *ngFor="let option of this.currentQuestion.getChoices()">
+                                <mat-checkbox [checked]="isChecked(index, option)"
+                                    (change)="onCheckboxChange( index, option, $event)">{{ option | titlecase }}
+                                </mat-checkbox>
                             </div>
                         </div>
                     </div>
@@ -56,8 +60,8 @@
         <!-- Control Button -->
         <div class="mt-2">
             <section class="d-flex flex-row">
-                <button mat-raised-button class="col" (click)="onBack()">Go Back</button>
-                <button mat-raised-button class="mx-2 col" color="primary" (click)="onContinue()">Continue</button>
+                <button mat-raised-button class="col" [disabled]="this.index < 1" (click)="onBack()">Go Back</button>
+                <button mat-raised-button class="mx-2 col" color="primary" [disabled]="shouldBeDisabled()" (click)="onContinue()">Continue</button>
             </section>
         </div>
     </form>
