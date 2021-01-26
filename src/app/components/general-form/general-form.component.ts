@@ -7,7 +7,15 @@ import {
   displayQuestion
 } from 'src/app/services/interview.service';
 
-import { FormGroup, AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormGroup, AbstractControl, FormBuilder, FormControl, Validators, NgForm, FormGroupDirective, FormArray } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+// Error when invalid control is dirty or touched 
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return (control && control.invalid) && (control.dirty || control.touched);
+  }
+}
 
 @Component({
   selector: 'app-general-form',
@@ -25,9 +33,9 @@ export class GeneralFormComponent implements OnInit {
   currentQuestion: displayQuestion;
   index = 0;
   loading = true;
+  matcher = new MyErrorStateMatcher();
 
   ngOnInit() {
-    console.log(this.interviewService.getQuestions());
     this.questions = this.interviewService.getQuestions();
 
     // Create a form group
@@ -39,6 +47,16 @@ export class GeneralFormComponent implements OnInit {
     this.interviewForm = new FormGroup(group);
     this.currentQuestion = this.questions[0];
     this.loading = false;
+  }
+
+  indexToName(index: number) {
+    return `question-${index}`;
+  }
+
+  onChangeEventFunc(index: number, name: string, isChecked: any) {
+    const arr = [];
+    arr.push(name);
+    const formControl = (this.interviewForm.get(this.indexToName(index)));
   }
 
   onContinue() {
