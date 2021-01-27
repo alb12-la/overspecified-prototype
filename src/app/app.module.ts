@@ -23,13 +23,17 @@ import { HomeComponent } from './components/home/home.component';
 import { GeneralFormComponent } from './components/general-form/general-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { NgxEchartsModule } from 'ngx-echarts';
+import { AnalyticsListComponent } from './components/analytics-list/analytics-list.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    GeneralFormComponent
+    GeneralFormComponent,
+    AnalyticsListComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +48,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatRadioModule,
     FormsModule,
     ReactiveFormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    })
   ],
   providers: [InterviewService],
   bootstrap: [AppComponent]

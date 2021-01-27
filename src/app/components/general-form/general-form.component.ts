@@ -7,6 +7,7 @@ import {
 
 import { FormGroup, AbstractControl, FormBuilder, FormControl, Validators, NgForm, FormGroupDirective, FormArray } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { Router } from '@angular/router';
 
 // Error when invalid control is dirty or touched
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -26,6 +27,7 @@ export class GeneralFormComponent implements OnInit {
   constructor(
     private interviewService: InterviewService,
     private fb: FormBuilder,
+    private router: Router
   ) { }
   questions: displayQuestion[];
   currentQuestion: displayQuestion;
@@ -104,6 +106,10 @@ export class GeneralFormComponent implements OnInit {
     console.log('Submitting', this.reviewAnswers);
     // TODO: make this navigate to home
 
+  }
+
+  exitForm() {
+    this.router.navigate(['../home']);
   }
 
   onChangeEventFunc(index: number, name: string, isChecked: any) {

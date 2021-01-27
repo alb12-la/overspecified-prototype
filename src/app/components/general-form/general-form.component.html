@@ -1,6 +1,9 @@
-<!-- Multiple Choice -->
+<div class="col-md-5 col-12 p-5 m-auto position-relative" >
+    <!-- Close Icon-->
+    <button mat-icon-button class="close-icon" (click)="exitForm()">
+        <mat-icon>close</mat-icon>
+    </button>
 
-<div class="col-md-5 col-12 p-5 m-auto">
     <div *ngIf="!this.loading && !shouldDisplayReview">
         <div class="material-pink small">
             Question {{ this.index + 1}} of {{this.questions.length }}
@@ -72,15 +75,17 @@
         </form>
     </div>
 
+    <!-- Review responses -->
     <div *ngIf="shouldDisplayReview" class="review-results">
         <div class="material-pink small mb-2">
             Review your responses
         </div>
-
+        
         <div *ngFor="let answer of reviewAnswers" class="">
             <h4 class="font-weight-bold">{{answer.question}}</h4>
-            <p  class="text-muted">{{answer.answer}}</p>
+            <p class="text-muted">{{answer.answer}}</p>
         </div>
+
         <!-- Control Button -->
         <div class="mt-2">
             <section class="d-flex flex-row">
@@ -89,8 +94,6 @@
             </section>
         </div>
     </div>
-
-
 </div>
 
 <pre>

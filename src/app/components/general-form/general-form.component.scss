@@ -1,0 +1,12 @@
+.close-icon {
+
+    position: fixed;
+    top: 7em;
+    right: 2em;
+
+    &:focus {
+        outline: none;
+    }
+
+
+}

@@ -6,7 +6,7 @@
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="/home/analytics">Analytics</a>
@@ -15,21 +15,18 @@
                     <a class="nav-link" href="/home/settings">Settings</a>
                 </li>
             </ul>
-        </div>
-
+        </div> -->
         <div class="btn">
             logout
         </div>
     </div>
 </nav>
 
-
 <div>
     <router-outlet></router-outlet>
 </div>
 
-
 <!-- New Interview Btn-->
-<button class="new-interview-btn" mat-fab color="accent" aria-label="New Interview" [routerLink]="['new']">
+<button *ngIf="shouldDisplayNewBtn()" class="new-interview-btn" mat-fab color="accent" aria-label="New Interview" [routerLink]="['new']">
     <mat-icon>add</mat-icon>
 </button>
