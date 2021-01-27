@@ -1,0 +1,12 @@
+<div class="container my-5">
+    <h1>Interview Summaries</h1>
+    <div class="row row-cols-2">
+        <div *ngFor="let chart of data" class="col my-2">
+            <div class="card">
+                <div class="card-body">
+                    <div echarts [options]="chart" [theme]="''" class="demo-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
