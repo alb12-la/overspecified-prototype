@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 export enum QuestionTypeEnum {
   INPUT = 'input',
@@ -7,7 +8,7 @@ export enum QuestionTypeEnum {
 
 export interface QuestionResponse {
   question: string;
-  answer: string;
+  answer: string | Array<any>;
 }
 
 export class QuestionObj {
@@ -60,10 +61,21 @@ export class MultipleChoiceQuestion extends QuestionObj {
 
 export type displayQuestion = QuestionObj & MultipleChoiceQuestion;
 
+export interface QuestionResponseSubmission {
+  question: string;
+  questionType: string;
+  answer: string;
+  choices?: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class InterviewService {
+
+  private localStorage: Map<string, { questionType: string, responses: Map<string, { number: number }> }> = new Map();
+  public summaryData$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+
   mockQuestions: any[] = [
     {
       questionType: 'multiplechoice',
@@ -144,4 +156,91 @@ export class InterviewService {
     console.log('questions', typedQuestions);
     return typedQuestions;
   }
+
+  submitResponse(questionResponses: QuestionResponseSubmission[]) {
+    // Add response to localStorage
+    questionResponses.forEach(response => {
+      if (response.questionType === QuestionTypeEnum.MULTIPLE_CHOICE) {
+
+        // Check if question exists in localStorage
+        if (this.localStorage.has(response.question)) {
+          // Just increment the count of how many times this choice has been selected
+          const questionToUpdate = this.localStorage.get(response.question);
+          const choiceToIncrement = questionToUpdate.responses.get(response.answer);
+          // Increment
+          choiceToIncrement.number = choiceToIncrement.number + 1;
+        } else {
+
+          // Create map to hold total count for each choice
+          const map = new Map<string, { number: number }>();
+
+          // Add each choice to map
+          response.choices.forEach(choice => {
+            map.set(choice, { number: 0 });
+          });
+
+          // Increment the selected answer in this response
+          const increment = map.get(response.answer);
+          increment.number = increment.number + 1;
+
+          // Save to local storage
+          this.localStorage.set(response.question,
+            {
+              responses: map,
+              questionType: QuestionTypeEnum.MULTIPLE_CHOICE,
+            });
+        }
+      } else if (response.questionType === QuestionTypeEnum.INPUT) {
+
+        if (this.localStorage.has(response.question)) {
+          // Just increment the count of how many times this choice has been selected
+          const questionToUpdate = this.localStorage.get(response.question);
+          if (questionToUpdate.responses.has(response.answer)) {
+            const choiceToIncrement = questionToUpdate.responses.get(response.answer);
+            // Increment
+            choiceToIncrement.number = choiceToIncrement.number + 1;
+          } else {
+            questionToUpdate.responses.set(response.answer, { number: 1 });
+            console.log(questionToUpdate, 'quesiton to update');
+          }
+        } else {
+          // Create map to hold total count for each choice
+          const map = new Map<string, { number: number }>();
+          // add this answer to the map
+          map.set(response.answer, { number: 1 });
+          this.localStorage.set(response.question,
+            {
+              responses: map,
+              questionType: QuestionTypeEnum.INPUT
+            });
+        }
+      }
+
+      console.log(this.localStorage);
+    });
+
+
+
+    // Update Data
+    const summaryArr: any[] = [];
+    this.localStorage.forEach((v, k) => {
+      // Convert choices map into an array that holds tally => Array { name:choiceName, value: totalCount }
+      const d: { name: string, value: number }[] = [];
+      v.responses.forEach((val, key) => {
+        d.push({ name: key, value: val.number });
+      });
+      // Create summary data
+      summaryArr.push(
+        {
+          question: k,
+          questionType: v.questionType,
+          data: d
+        }
+      );
+      console.log('SUMMARY DAATA', summaryArr);
+    });
+    this.summaryData$.next(summaryArr);
+  }
+
+
 }

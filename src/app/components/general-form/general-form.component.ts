@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {
   InterviewService,
   QuestionTypeEnum,
-  displayQuestion
+  displayQuestion,
+  QuestionResponse,
+  QuestionResponseSubmission
 } from 'src/app/services/interview.service';
 
 import { FormGroup, AbstractControl, FormBuilder, FormControl, Validators, NgForm, FormGroupDirective, FormArray } from '@angular/forms';
@@ -15,6 +17,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return (control && control.invalid) && (control.dirty || control.touched);
   }
 }
+
 
 @Component({
   selector: 'app-general-form',
@@ -89,8 +92,10 @@ export class GeneralFormComponent implements OnInit {
       // Get index of question
       const index = key.split('-')[1];
       // Create question / answer obj
-      const obj = {
+      const obj: QuestionResponseSubmission = {
         question: this.questions[index].question,
+        questionType : this.questions[index].questionType,
+        choices: this.questions[index].choices,
         answer: formValue[key]
       };
       this.reviewAnswers.push(obj);
@@ -104,8 +109,8 @@ export class GeneralFormComponent implements OnInit {
 
   submitForm() {
     console.log('Submitting', this.reviewAnswers);
-    // TODO: make this navigate to home
-
+    this.interviewService.submitResponse(this.reviewAnswers);
+    this.exitForm();
   }
 
   exitForm() {

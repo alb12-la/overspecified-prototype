@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { InterviewService, QuestionTypeEnum } from 'src/app/services/interview.service';
 
 @Component({
   selector: 'app-analytics-list',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./analytics-list.component.scss']
 })
 export class AnalyticsListComponent implements OnInit {
+  constructor(private interviewService: InterviewService) { }
+  chartData = [];
   data = [
     {
       title: {
@@ -103,9 +106,68 @@ export class AnalyticsListComponent implements OnInit {
       }]
     }
   ];
-  constructor() { }
+
 
   ngOnInit() {
+    this.interviewService.summaryData$.subscribe((summaryData) => {
+      console.log('LATEST', summaryData);
+      summaryData.forEach(question => {
+        // Generate a chart
+        this.chartData.push(this.chartGenerator(question));
+      });
+
+    });
+  }
+
+
+  chartGenerator(question) {
+    if (question.questionType === QuestionTypeEnum.MULTIPLE_CHOICE) {
+      console.log('Generating multiple choice chart');
+      return {
+        title: {
+          text: question.question,
+          x: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        calculable: true,
+        series: [
+          {
+            name: 'Answer',
+            type: 'pie',
+            radius: [30, 110],
+            data: question.data
+          }
+        ]
+      };
+    } else if (question.questionType === QuestionTypeEnum.INPUT) {
+      console.log('Generating an INPUT chart');
+      console.log('input?', question.data.map(d =>  d.name ) );
+      return {
+        title: {
+          text: question.quesiton,
+          x: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        calculable: true,
+        xAxis: {
+          type: 'category',
+          data: question.data.map(d =>  d.name )
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: question.data.map(d =>  d.value ),
+          type: 'bar'
+        }]
+      };
+    }
   }
 
 }
