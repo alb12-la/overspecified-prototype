@@ -32,7 +32,8 @@ export class GeneralFormComponent implements OnInit {
   index = 0;
   loading = true;
   matcher = new MyErrorStateMatcher();
-
+  reviewAnswers = [];
+  shouldDisplayReview = false;
   ngOnInit() {
     this.questions = this.interviewService.getQuestions();
 
@@ -79,6 +80,32 @@ export class GeneralFormComponent implements OnInit {
     return !this.interviewForm.get(this.indexToName(this.index)).valid;
   }
 
+  prepareResults() {
+    const formValue = this.interviewForm.value;
+    // Create submit ready objects
+    Object.keys(formValue).map(key => {
+      // Get index of question
+      const index = key.split('-')[1];
+      // Create question / answer obj
+      const obj = {
+        question: this.questions[index].question,
+        answer: formValue[key]
+      };
+      this.reviewAnswers.push(obj);
+    });
+  }
+
+  backToEditing() {
+    this.reviewAnswers = [];
+    this.shouldDisplayReview = false;
+  }
+
+  submitForm() {
+    console.log('Submitting', this.reviewAnswers);
+    // TODO: make this navigate to home
+
+  }
+
   onChangeEventFunc(index: number, name: string, isChecked: any) {
     const arr = [];
     arr.push(name);
@@ -86,6 +113,14 @@ export class GeneralFormComponent implements OnInit {
   }
 
   onContinue() {
+    // If all questions have been answered, display responses review
+    if (this.index === this.questions.length - 1) {
+      // Prepare JSON in case user wants to submit
+      this.prepareResults();
+      this.shouldDisplayReview = true;
+      return;
+    }
+
     this.index++;
     this.currentQuestion = this.questions[this.index];
   }

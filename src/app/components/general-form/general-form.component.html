@@ -1,70 +1,96 @@
 <!-- Multiple Choice -->
-<div *ngIf="!this.loading" class="col-md-5 col-12 p-5 m-auto">
-    <div class="material-pink small">
-        Question {{ this.index + 1}} of {{this.questions.length }}
-    </div>
 
-    <form [formGroup]="interviewForm">
-        <ng-container [ngSwitch]="this.currentQuestion.getQuestionType()">
-            <!-- MULTIPLE CHOICE -->
-            <ng-container *ngSwitchCase="QuestionTypeEnum.MULTIPLE_CHOICE">
-                <!-- Radio button -->
-                <div class="question-container">
-                    <h1>{{ currentQuestion.getQuestion() }}</h1>
+<div class="col-md-5 col-12 p-5 m-auto">
+    <div *ngIf="!this.loading && !shouldDisplayReview">
+        <div class="material-pink small">
+            Question {{ this.index + 1}} of {{this.questions.length }}
+        </div>
 
-                    <div class="d-flex flex-column m-5"
-                        *ngIf="this.currentQuestion.getChoices() && this.currentQuestion.getChoices().length > 0 ">
-                        <!-- RADIO -->
-                        <mat-radio-group *ngIf="!this.currentQuestion.getIsMultipleAnswer()"
-                            [formControl]="interviewForm.get('question-'+ index)" class="d-flex flex-column">
-                            <mat-radio-button class="tp-radio-button my-1"
-                                *ngFor="let option of this.currentQuestion.getChoices()" [value]="option">
-                                {{option | titlecase }}
-                            </mat-radio-button>
-                        </mat-radio-group>
+        <form [formGroup]="interviewForm">
+            <ng-container [ngSwitch]="this.currentQuestion.getQuestionType()">
+                <!-- MULTIPLE CHOICE -->
+                <ng-container *ngSwitchCase="QuestionTypeEnum.MULTIPLE_CHOICE">
+                    <!-- Radio button -->
+                    <div class="question-container">
+                        <h1>{{ currentQuestion.getQuestion() }}</h1>
 
-                        <!-- CHECKBOX -->
-                        <div *ngIf="this.currentQuestion.getIsMultipleAnswer()" class="d-flex flex-column">
-                            <div class="small my-1 material-pink">( Select all that apply )</div>
-                            <div *ngFor="let option of this.currentQuestion.getChoices()">
-                                <mat-checkbox [checked]="isChecked(index, option)"
-                                    (change)="onCheckboxChange( index, option, $event)">{{ option | titlecase }}
-                                </mat-checkbox>
+                        <div class="d-flex flex-column m-5"
+                            *ngIf="this.currentQuestion.getChoices() && this.currentQuestion.getChoices().length > 0 ">
+                            <!-- RADIO -->
+                            <mat-radio-group *ngIf="!this.currentQuestion.getIsMultipleAnswer()"
+                                [formControl]="interviewForm.get('question-'+ index)" class="d-flex flex-column">
+                                <mat-radio-button class="tp-radio-button my-1"
+                                    *ngFor="let option of this.currentQuestion.getChoices()" [value]="option">
+                                    {{option | titlecase }}
+                                </mat-radio-button>
+                            </mat-radio-group>
+
+                            <!-- CHECKBOX -->
+                            <div *ngIf="this.currentQuestion.getIsMultipleAnswer()" class="d-flex flex-column">
+                                <div class="small my-1 material-pink">( Select all that apply )</div>
+                                <div *ngFor="let option of this.currentQuestion.getChoices()">
+                                    <mat-checkbox [checked]="isChecked(index, option)"
+                                        (change)="onCheckboxChange( index, option, $event)">{{ option | titlecase }}
+                                    </mat-checkbox>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </ng-container>
-            <!-- END : Multiple Choice -->
+                </ng-container>
+                <!-- END : Multiple Choice -->
 
-            <!-- INPUT -->
-            <ng-container *ngSwitchCase="QuestionTypeEnum.INPUT">
-                <div class="question-container">
-                    <h1>{{ currentQuestion.getQuestion() }}</h1>
-                    <div class="d-flex flex-column m-5">
-                        <mat-form-field class="example-full-width">
-                            <mat-label>No wrong answers</mat-label>
-                            <input type="email" matInput [formControl]="interviewForm.get('question-'+index)"
-                                [errorStateMatcher]="matcher">
-                            <mat-hint *ngIf="currentQuestion.getHint()">Hint: {{ currentQuestion.getHint() }}</mat-hint>
-                            <mat-error *ngIf="interviewForm.get('question-'+index).hasError('required') && matcher">
-                                Required
-                            </mat-error>
-                        </mat-form-field>
+                <!-- INPUT -->
+                <ng-container *ngSwitchCase="QuestionTypeEnum.INPUT">
+                    <div class="question-container">
+                        <h1>{{ currentQuestion.getQuestion() }}</h1>
+                        <div class="d-flex flex-column m-5">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>No wrong answers</mat-label>
+                                <input type="email" matInput [formControl]="interviewForm.get('question-'+index)"
+                                    [errorStateMatcher]="matcher">
+                                <mat-hint *ngIf="currentQuestion.getHint()">Hint: {{ currentQuestion.getHint() }}
+                                </mat-hint>
+                                <mat-error *ngIf="interviewForm.get('question-'+index).hasError('required') && matcher">
+                                    Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
                     </div>
-                </div>
+                </ng-container>
+                <!-- END : INPUT -->
             </ng-container>
-            <!-- END : INPUT -->
-        </ng-container>
 
+            <!-- Control Button -->
+            <div class="mt-2">
+                <section class="d-flex flex-row">
+                    <button mat-raised-button class="col" [disabled]="this.index < 1" (click)="onBack()">Go
+                        Back</button>
+                    <button mat-raised-button class="mx-2 col" color="primary" [disabled]="shouldBeDisabled()"
+                        (click)="onContinue()">Continue</button>
+                </section>
+            </div>
+        </form>
+    </div>
+
+    <div *ngIf="shouldDisplayReview" class="review-results">
+        <div class="material-pink small mb-2">
+            Review your responses
+        </div>
+
+        <div *ngFor="let answer of reviewAnswers" class="">
+            <h4 class="font-weight-bold">{{answer.question}}</h4>
+            <p  class="text-muted">{{answer.answer}}</p>
+        </div>
         <!-- Control Button -->
         <div class="mt-2">
             <section class="d-flex flex-row">
-                <button mat-raised-button class="col" [disabled]="this.index < 1" (click)="onBack()">Go Back</button>
-                <button mat-raised-button class="mx-2 col" color="primary" [disabled]="shouldBeDisabled()" (click)="onContinue()">Continue</button>
+                <button mat-raised-button class="col" (click)="backToEditing()">Edit Responses</button>
+                <button mat-raised-button class="mx-2 col" color="primary" (click)="submitForm()">Submit</button>
             </section>
         </div>
-    </form>
+    </div>
+
+
 </div>
 
 <pre>
