@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { InterviewService, QuestionTypeEnum } from 'src/app/services/interview.service';
 
+export interface ChartDataObj {
+  question: string;
+  questionType: string;
+  data: { name: string, value: number }[];
+}
+
 @Component({
   selector: 'app-analytics-list',
   templateUrl: './analytics-list.component.html',
@@ -10,33 +16,13 @@ export class AnalyticsListComponent implements OnInit {
   constructor(private interviewService: InterviewService) { }
   chartData = [];
 
-  // TODO REMOVE MOCK BELOW
-  data = [
-    this.chartGenerator({
-      question: 'When you come to a fork in the road, and there are no options left, which way do you go?',
-      questionType: 'multiplechoice',
-      data: [
-        {
-          name: 'left',
-          value: 1
-        },
-        {
-          name: 'counter-left',
-          value: 0
-        }
-      ]
-    })
-  ];
-
-
   ngOnInit() {
     this.interviewService.summaryData$.subscribe((summaryData) => {
-      console.log('LATEST', summaryData);
+      // Update chartData anytime
       summaryData.forEach(question => {
         // Generate a chart
         this.chartData.push(this.chartGenerator(question));
       });
-
     });
   }
 
@@ -51,14 +37,15 @@ export class AnalyticsListComponent implements OnInit {
     }
   }
 
-
-  chartGenerator(question) {
-    if (question.questionType === QuestionTypeEnum.MULTIPLE_CHOICE) {
-      console.log('Generating from', JSON.stringify(question))
-      console.log('Generating multiple choice chart');
+  /**
+   * Generates an eCharts object from chartData
+   */
+  chartGenerator(chartData: ChartDataObj): object {
+    if (chartData.questionType === QuestionTypeEnum.MULTIPLE_CHOICE) {
+      // Create a pie chart
       return {
-        question: question.question,
-        questionType: question.questionType,
+        question: chartData.question,
+        questionType: chartData.questionType,
         options: {
           tooltip: {
             trigger: 'item',
@@ -70,22 +57,18 @@ export class AnalyticsListComponent implements OnInit {
               name: 'Answer',
               type: 'pie',
               radius: [30, 110],
-              data: question.data
+              data: chartData.data
             }
           ]
         }
 
       };
-    } else if (question.questionType === QuestionTypeEnum.INPUT) {
-      console.log('Generating an INPUT chart');
+    } else if (chartData.questionType === QuestionTypeEnum.INPUT) {
+      // Create a Bar Chart
       return {
-        question: question.question,
-        questionType: question.questionType,
+        question: chartData.question,
+        questionType: chartData.questionType,
         options: {
-          title: {
-            text: question.question,
-            x: 'center'
-          },
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -93,18 +76,17 @@ export class AnalyticsListComponent implements OnInit {
           calculable: true,
           xAxis: {
             type: 'category',
-            data: question.data.map(d => d.name)
+            data: chartData.data.map(d => d.name)
           },
           yAxis: {
             type: 'value'
           },
           series: [{
-            data: question.data.map(d => d.value),
+            data: chartData.data.map(d => d.value),
             type: 'bar'
           }]
         }
       };
     }
   }
-
 }

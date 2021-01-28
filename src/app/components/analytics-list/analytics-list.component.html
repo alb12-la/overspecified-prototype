@@ -3,13 +3,13 @@
         <h1>Interview Summaries</h1>
         <div class="row row-cols-2">
             <div *ngFor="let chart of chartData" class="col my-2">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-body">
                         <div class="card-title">
                             <h5 class="card-title font-bold">{{chart.question}}</h5>
                             <div class="small text-muted">{{ questionTypeToString(chart.questionType) }}</div>
                         </div>
-                        <div echarts [options]="chart.options" [theme]="''" class="demo-chart"></div>
+                        <div echarts [options]="chart.options" [theme]="''"></div>
                     </div>
                 </div>
             </div>
