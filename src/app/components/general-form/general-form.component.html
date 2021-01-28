@@ -21,7 +21,7 @@
                     <div class="question-container">
                         <h1>{{ currentQuestion.getQuestion() }}</h1>
 
-                        <div class="d-flex flex-column m-5"
+                        <div class="d-flex flex-column m-5 multiple-choice-container"
                             *ngIf="this.currentQuestion.getChoices() && this.currentQuestion.getChoices().length > 0 ">
                             <!-- RADIO -->
                             <mat-radio-group *ngIf="!this.currentQuestion.getIsMultipleAnswer()"

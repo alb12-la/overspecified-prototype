@@ -1,7 +1,7 @@
 <div class="container my-5">
     <ng-container *ngIf="this.chartData && chartData.length > 0; else analyticsBlankState ">
         <h1>Interview Summaries</h1>
-        <div class="row row-cols-2">
+        <div class="row row-cols-1 row-cols-md-2">
             <div *ngFor="let chart of chartData" class="col my-2">
                 <div class="card h-100">
                     <div class="card-body">

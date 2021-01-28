@@ -10,3 +10,16 @@
 
 
 }
+
+
+@media screen and (max-width: 640px) {
+    .multiple-choice-container {
+        margin-left: 0px !important;
+        margin-left: 0px !important;
+    }
+
+    ::ng-deep.mat-radio-label-content {
+        white-space: pre-wrap;
+        min-width: 220px;
+    }
+}
