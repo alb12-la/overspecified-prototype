@@ -93,9 +93,7 @@ export class GeneralFormComponent implements OnInit {
       const index = key.split('-')[1];
       // Create question / answer obj
       const obj: QuestionResponseSubmission = {
-        question: this.questions[index].question,
-        questionType : this.questions[index].questionType,
-        choices: this.questions[index].choices,
+        originalQuestion: this.questions[index],
         answer: formValue[key]
       };
       this.reviewAnswers.push(obj);
