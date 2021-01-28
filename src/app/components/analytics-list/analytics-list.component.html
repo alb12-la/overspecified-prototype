@@ -5,13 +5,16 @@
             <div *ngFor="let chart of chartData" class="col my-2">
                 <div class="card">
                     <div class="card-body">
-                        <div echarts [options]="chart" [theme]="''" class="demo-chart"></div>
+                        <div class="card-title">
+                            <h5 class="card-title font-bold">{{chart.question}}</h5>
+                            <div class="small text-muted">{{ questionTypeToString(chart.questionType) }}</div>
+                        </div>
+                        <div echarts [options]="chart.options" [theme]="''" class="demo-chart"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-    
     </ng-container>
     <ng-template #analyticsBlankState>
         No analytics for today
