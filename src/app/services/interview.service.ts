@@ -62,10 +62,8 @@ export class MultipleChoiceQuestion extends QuestionObj {
 export type displayQuestion = QuestionObj & MultipleChoiceQuestion;
 
 export interface QuestionResponseSubmission {
-  question: string;
-  questionType: string;
+  originalQuestion: displayQuestion;
   answer: string;
-  choices?: string[];
 }
 
 @Injectable({
@@ -158,89 +156,120 @@ export class InterviewService {
   }
 
   submitResponse(questionResponses: QuestionResponseSubmission[]) {
-    // Add response to localStorage
+
+    /**
+     * The following, is a function to reliably store + update interview results
+     */
     questionResponses.forEach(response => {
-      if (response.questionType === QuestionTypeEnum.MULTIPLE_CHOICE) {
+      /**
+       * The question was of type MULTIPLE CHOICE
+       */
+      if (response.originalQuestion.getQuestionType() === QuestionTypeEnum.MULTIPLE_CHOICE) {
 
         // Check if question exists in localStorage
-        if (this.localStorage.has(response.question)) {
-          // Just increment the count of how many times this choice has been selected
-          const questionToUpdate = this.localStorage.get(response.question);
-          const choiceToIncrement = questionToUpdate.responses.get(response.answer);
-          // Increment
-          choiceToIncrement.number = choiceToIncrement.number + 1;
-        } else {
+        if (this.localStorage.has(response.originalQuestion.getQuestion())) {
 
+          // If has multiple answers, check each answer item
+          if (response.originalQuestion.getIsMultipleAnswer()) {
+            const answerArr: Array<any> = response.answer as unknown as Array<any>;
+            answerArr.forEach(ans => {
+              // Increment total count of how many times this answer has been selected
+              const questionToUpdate = this.localStorage.get(response.originalQuestion.getQuestion());
+              const choiceToIncrement = questionToUpdate.responses.get(ans);
+              // Increment
+              choiceToIncrement.number = choiceToIncrement.number + 1;
+            });
+          } else {
+            // If just a single answer
+            // Just increment the count of how many times this choice has been selected
+            const questionToUpdate = this.localStorage.get(response.originalQuestion.getQuestion());
+            const choiceToIncrement = questionToUpdate.responses.get(response.answer);
+            // Increment
+            choiceToIncrement.number = choiceToIncrement.number + 1;
+          }
+        } else {
+          // Question is not in local storage, create an entry for it
           // Create map to hold total count for each choice
           const map = new Map<string, { number: number }>();
 
           // Add each choice to map
-          response.choices.forEach(choice => {
+          response.originalQuestion.getChoices().forEach(choice => {
             map.set(choice, { number: 0 });
           });
 
-          // Increment the selected answer in this response
-          const increment = map.get(response.answer);
-          increment.number = increment.number + 1;
+          // If multiple answers are allowed, loop through answer and increment if it was selected
+          if (response.originalQuestion.getIsMultipleAnswer()) {
+            const answerArr: Array<any> = response.answer as unknown as Array<any>;
+            answerArr.forEach(ans => {
+              const increment = map.get(ans);
+              increment.number = increment.number + 1;
+            });
+          } else {
+            // Increment the selected answer in this response
+            const increment = map.get(response.answer);
+            increment.number = increment.number + 1;
+          }
 
           // Save to local storage
-          this.localStorage.set(response.question,
+          this.localStorage.set(response.originalQuestion.getQuestion(),
             {
               responses: map,
               questionType: QuestionTypeEnum.MULTIPLE_CHOICE,
             });
         }
-      } else if (response.questionType === QuestionTypeEnum.INPUT) {
+      } else if (response.originalQuestion.getQuestionType() === QuestionTypeEnum.INPUT) {
 
-        if (this.localStorage.has(response.question)) {
+        /**
+         * The question was of type USER INPUT
+         */
+
+        if (this.localStorage.has(response.originalQuestion.getQuestion())) {
           // Just increment the count of how many times this choice has been selected
-          const questionToUpdate = this.localStorage.get(response.question);
+          const questionToUpdate = this.localStorage.get(response.originalQuestion.getQuestion());
           if (questionToUpdate.responses.has(response.answer)) {
             const choiceToIncrement = questionToUpdate.responses.get(response.answer);
             // Increment
             choiceToIncrement.number = choiceToIncrement.number + 1;
           } else {
             questionToUpdate.responses.set(response.answer, { number: 1 });
-            console.log(questionToUpdate, 'quesiton to update');
           }
         } else {
           // Create map to hold total count for each choice
           const map = new Map<string, { number: number }>();
           // add this answer to the map
           map.set(response.answer, { number: 1 });
-          this.localStorage.set(response.question,
+          // Save to local storage
+          this.localStorage.set(response.originalQuestion.getQuestion(),
             {
               responses: map,
               questionType: QuestionTypeEnum.INPUT
             });
         }
       }
-
-      console.log(this.localStorage);
+      // This has been purposefully left active to show how local storage works
+      console.log('Local storage has been updated', this.localStorage);
     });
 
 
-
-    // Update Data
+    // Extract all data from localStorage for an array containing tallied data for graph creation
     const summaryArr: any[] = [];
     this.localStorage.forEach((v, k) => {
-      // Convert choices map into an array that holds tally => Array { name:choiceName, value: totalCount }
-      const d: { name: string, value: number }[] = [];
+      // Convert choices map into an array that holds tally i.e (  questionName  => [ { name:choiceName, value: totalCount } ] )
+      const dataArr: { name: string, value: number }[] = [];
       v.responses.forEach((val, key) => {
-        d.push({ name: key, value: val.number });
+        dataArr.push({ name: key, value: val.number });
       });
       // Create summary data
       summaryArr.push(
         {
           question: k,
           questionType: v.questionType,
-          data: d
+          data: dataArr
         }
       );
-      console.log('SUMMARY DAATA', summaryArr);
     });
+
+    // Emit this updated data to the analytics that is subscribed to this BehaviorSubject
     this.summaryData$.next(summaryArr);
   }
-
-
 }
