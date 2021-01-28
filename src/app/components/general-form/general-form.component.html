@@ -47,9 +47,8 @@
                     <div class="question-container">
                         <h1>{{ currentQuestion.getQuestion() }}</h1>
                         <div class="d-flex flex-column m-5">
-                            <mat-form-field class="example-full-width">
-                                <mat-label>No wrong answers</mat-label>
-                                <input type="email" matInput [formControl]="interviewForm.get('question-'+index)"
+                            <mat-form-field >
+                                <input type="text" matInput [formControl]="interviewForm.get('question-'+index)"
                                     [errorStateMatcher]="matcher">
                                 <mat-hint *ngIf="currentQuestion.getHint()">Hint: {{ currentQuestion.getHint() }}
                                 </mat-hint>

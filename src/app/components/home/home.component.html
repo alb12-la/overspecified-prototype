@@ -2,13 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" [routerLink]="['/home']">OW Inc.</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="btn">
-            logout
-        </div>
+        <a class="btn" [routerLink]="['/login']">logout </a>
     </div>
 </nav>
 
@@ -17,6 +11,7 @@
 </div>
 
 <!-- New Interview Btn-->
-<button *ngIf="shouldDisplayNewBtn()" class="new-interview-btn" mat-fab color="accent" aria-label="New Interview" [routerLink]="['new']">
+<button *ngIf="shouldDisplayNewBtn()" class="new-interview-btn" mat-fab color="accent" aria-label="New Interview"
+    [routerLink]="['new']">
     <mat-icon>add</mat-icon>
 </button>
