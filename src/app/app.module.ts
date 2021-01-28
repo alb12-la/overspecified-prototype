@@ -27,6 +27,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AnalyticsListComponent } from './components/analytics-list/analytics-list.component';
 import { AutofocusDirective } from './directives/autofocus.directive';
+import * as echarts from 'echarts';
 
 
 
@@ -54,9 +55,7 @@ import { AutofocusDirective } from './directives/autofocus.directive';
     ReactiveFormsModule,
     MatCheckboxModule,
     A11yModule,
-    NgxEchartsModule.forRoot({
-      echarts: () => import('echarts')
-    })
+    NgxEchartsModule.forRoot({ echarts })
   ],
   providers: [InterviewService],
   bootstrap: [AppComponent]
