@@ -26,6 +26,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AnalyticsListComponent } from './components/analytics-list/analytics-list.component';
 
+export function echartsGetter() {
+  return () => import('echarts');
+}
 
 @NgModule({
   declarations: [
@@ -50,7 +53,7 @@ import { AnalyticsListComponent } from './components/analytics-list/analytics-li
     ReactiveFormsModule,
     MatCheckboxModule,
     NgxEchartsModule.forRoot({
-      echarts: () => import('echarts')
+      echarts: echartsGetter
     })
   ],
   providers: [InterviewService],
