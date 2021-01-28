@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { InterviewService } from './services/interview.service';
+import { A11yModule } from '@angular/cdk/a11y';
 
 // Material imports
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -25,10 +26,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AnalyticsListComponent } from './components/analytics-list/analytics-list.component';
+import { AutofocusDirective } from './directives/autofocus.directive';
 
-export function echartsGetter() {
-  return () => import('echarts');
-}
+
 
 @NgModule({
   declarations: [
@@ -36,7 +36,8 @@ export function echartsGetter() {
     LoginComponent,
     HomeComponent,
     GeneralFormComponent,
-    AnalyticsListComponent
+    AnalyticsListComponent,
+    AutofocusDirective
   ],
   imports: [
     BrowserModule,
@@ -52,8 +53,9 @@ export function echartsGetter() {
     FormsModule,
     ReactiveFormsModule,
     MatCheckboxModule,
+    A11yModule,
     NgxEchartsModule.forRoot({
-      echarts: echartsGetter
+      echarts: () => import('echarts')
     })
   ],
   providers: [InterviewService],

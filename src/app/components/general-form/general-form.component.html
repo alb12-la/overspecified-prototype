@@ -1,6 +1,6 @@
-<div class="col-md-5 col-12 p-5 m-auto position-relative" >
+<div class="col-md-5 col-12 p-5 m-auto position-relative" (keydown.enter)="enterHandler($event)" >
     <!-- Close Icon-->
-    <button mat-icon-button class="close-icon" (click)="exitForm()">
+    <button tabindex="-1" mat-icon-button class="close-icon" (click)="exitForm()">
         <mat-icon>close</mat-icon>
     </button>
 
@@ -21,15 +21,15 @@
                             *ngIf="this.currentQuestion.getChoices() && this.currentQuestion.getChoices().length > 0 ">
                             <!-- RADIO -->
                             <mat-radio-group *ngIf="!this.currentQuestion.getIsMultipleAnswer()"
-                                [formControl]="interviewForm.get('question-'+ index)" class="d-flex flex-column">
-                                <mat-radio-button class="tp-radio-button my-1"
+                                [formControl]="interviewForm.get('question-'+ index)" class="d-flex flex-column" cdkTrapFocus>
+                                <mat-radio-button  class="tp-radio-button my-1"
                                     *ngFor="let option of this.currentQuestion.getChoices()" [value]="option">
                                     {{option | titlecase }}
                                 </mat-radio-button>
                             </mat-radio-group>
 
                             <!-- CHECKBOX -->
-                            <div *ngIf="this.currentQuestion.getIsMultipleAnswer()" class="d-flex flex-column">
+                            <div *ngIf="this.currentQuestion.getIsMultipleAnswer()" class="d-flex flex-column" cdkTrapFocus>
                                 <div class="small my-1 material-pink">( Select all that apply )</div>
                                 <div *ngFor="let option of this.currentQuestion.getChoices()">
                                     <mat-checkbox [checked]="isChecked(index, option)"
@@ -47,7 +47,7 @@
                     <div class="question-container">
                         <h1>{{ currentQuestion.getQuestion() }}</h1>
                         <div class="d-flex flex-column m-5">
-                            <mat-form-field >
+                            <mat-form-field cdkTrapFocus >
                                 <input type="text" matInput [formControl]="interviewForm.get('question-'+index)"
                                     [errorStateMatcher]="matcher">
                                 <mat-hint *ngIf="currentQuestion.getHint()">Hint: {{ currentQuestion.getHint() }}
@@ -88,8 +88,8 @@
         <!-- Control Button -->
         <div class="mt-2">
             <section class="d-flex flex-row">
-                <button mat-raised-button class="col" (click)="backToEditing()">Edit Responses</button>
-                <button mat-raised-button class="mx-2 col" color="primary" (click)="submitForm()">Submit</button>
+                <button mat-raised-button class="col" tabindex="-1" (click)="backToEditing()">Edit Responses</button>
+                <button mat-raised-button class="mx-2 col" color="primary" (click)="submitForm()" appAutofocus>Submit</button>
             </section>
         </div>
     </div>

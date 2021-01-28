@@ -81,6 +81,20 @@ export class GeneralFormComponent implements OnInit {
     return formControl.controls.some(control => control.value === option);
   }
 
+  enterHandler(event: Event) {
+    event.preventDefault();
+
+    if (this.shouldDisplayReview) {
+      this.submitForm();
+      return;
+    }
+
+    if (!this.shouldBeDisabled()) {
+      this.onContinue();
+    }
+
+  }
+
   shouldBeDisabled() {
     return !this.interviewForm.get(this.indexToName(this.index)).valid;
   }
