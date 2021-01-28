@@ -4,6 +4,10 @@
         <mat-icon>close</mat-icon>
     </button>
 
+    <div *ngIf="this.loading" class="mt-5">
+        <mat-progress-spinner class="m-auto" mode="indeterminate"></mat-progress-spinner>
+    </div>
+
     <div *ngIf="!this.loading && !shouldDisplayReview">
         <div class="material-pink small">
             Question {{ this.index + 1}} of {{this.questions.length }}

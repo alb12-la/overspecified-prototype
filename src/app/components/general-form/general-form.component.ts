@@ -40,8 +40,13 @@ export class GeneralFormComponent implements OnInit {
   reviewAnswers = [];
   shouldDisplayReview = false;
   ngOnInit() {
-    this.questions = this.interviewService.getQuestions();
 
+    this.getQuestions();
+  }
+
+  async getQuestions() {
+    this.loading = true;
+    this.questions = await this.interviewService.getQuestions();
     // Create a form group
     const group = {};
     this.questions.forEach((question, index) => {

@@ -18,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { HomeComponent } from './components/home/home.component';
 import { GeneralFormComponent } from './components/general-form/general-form.component';
@@ -52,6 +52,7 @@ import * as echarts from 'echarts';
     MatInputModule,
     MatRadioModule,
     FormsModule,
+    MatProgressSpinnerModule,
     ReactiveFormsModule,
     MatCheckboxModule,
     A11yModule,

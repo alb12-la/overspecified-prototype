@@ -146,12 +146,16 @@ export class InterviewService {
     }
   }
 
-  getQuestions() {
+  getQuestions(): Promise<displayQuestion[]> {
     const typedQuestions: displayQuestion[] = [];
     this.mockQuestions.forEach(obj => {
       typedQuestions.push(this.deserializeQuestions(obj));
     });
-    return typedQuestions;
+
+    // Simulate server latency with 1s delay
+    return new Promise(resolve => {
+      setTimeout(() => resolve(typedQuestions), 1000);
+    });
   }
 
   submitResponse(questionResponses: QuestionResponseSubmission[]) {
