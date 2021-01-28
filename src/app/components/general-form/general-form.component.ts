@@ -106,7 +106,6 @@ export class GeneralFormComponent implements OnInit {
   }
 
   submitForm() {
-    console.log('Submitting', this.reviewAnswers);
     this.interviewService.submitResponse(this.reviewAnswers);
     this.exitForm();
   }

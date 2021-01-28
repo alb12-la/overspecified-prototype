@@ -151,7 +151,6 @@ export class InterviewService {
     this.mockQuestions.forEach(obj => {
       typedQuestions.push(this.deserializeQuestions(obj));
     });
-    console.log('questions', typedQuestions);
     return typedQuestions;
   }
 
